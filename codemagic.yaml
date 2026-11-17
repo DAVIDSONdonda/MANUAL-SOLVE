@@ -1,0 +1,60 @@
+workflows:
+  android-release:
+    name: Grid Click Android release
+    instance_type: mac_mini_m2
+    max_build_duration: 30
+    environment:
+      node: 22.14.0
+      java: 17
+      groups:
+        - google_play
+      vars:
+        PACKAGE_NAME: space.manus.gridclick.t193390636688549
+      android_signing:
+        - gridclick_keystore
+    scripts:
+      - name: Install pnpm and project dependencies
+        script: |
+          corepack enable
+          corepack prepare pnpm@9.12.0 --activate
+          pnpm install --frozen-lockfile
+      - name: Generate native Android project
+        script: |
+          npx expo prebuild --platform android --non-interactive
+      - name: Build signed Android App Bundle
+        script: |
+          cd android
+          ./gradlew bundleRelease
+    artifacts:
+      - android/app/build/outputs/**/*.aab
+      - android/app/build/outputs/**/*.apk
+    publishing:
+      email:
+        recipients:
+          - $CM_EMAIL
+        notify:
+          success: true
+          failure: true
+
+  android-debug:
+    name: Grid Click Android debug APK
+    instance_type: mac_mini_m2
+    max_build_duration: 30
+    environment:
+      node: 22.14.0
+      java: 17
+    scripts:
+      - name: Install pnpm and project dependencies
+        script: |
+          corepack enable
+          corepack prepare pnpm@9.12.0 --activate
+          pnpm install --frozen-lockfile
+      - name: Generate native Android project
+        script: |
+          npx expo prebuild --platform android --non-interactive
+      - name: Build debug APK
+        script: |
+          cd android
+          ./gradlew assembleDebug
+    artifacts:
+      - android/app/build/outputs/**/*.apk
