@@ -68,11 +68,8 @@ Les indices `columnIndex` et `rowIndex` commencent à 1. Les colonnes vont de `A
 
 ## Compilation Codemagic
 
-Le fichier [`codemagic.yaml`](./codemagic.yaml) contient deux workflows :
+Le fichier [`codemagic.yaml`](./codemagic.yaml) contient un workflow `android-apk` qui produit un APK debug installable pour les tests, sans keystore et sans compte Google Play.
 
-- `android-debug` produit un APK de test sans signature de production ;
-- `android-release` produit un AAB signé avec le groupe de signature Codemagic `gridclick_keystore`.
-
-Dans Codemagic, connectez le dépôt, sélectionnez `codemagic.yaml`, puis configurez le groupe de signature Android nommé `gridclick_keystore`. Pour publier sur Google Play, associez également les variables et identifiants Google Play dans le groupe `google_play`. Le workflow utilise `instance_type: mac_mini_m2`.
+Dans Codemagic, connectez le dépôt, sélectionnez la branche `main` et le workflow `Grid Click Android APK`. Le workflow utilise `instance_type: mac_mini_m2`. Ce fichier ne configure volontairement ni signature Android, ni groupe `google_play`, car l’application n’est pas destinée à être publiée sur Google Play.
 
 Avant d’utiliser un serveur local sur un téléphone réel, autorisez le port 3000 sur le Mac mini et faites écouter le serveur sur `0.0.0.0`, pas uniquement sur `127.0.0.1`. Pour un serveur Render, utilisez HTTPS.
